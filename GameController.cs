@@ -1,6 +1,6 @@
 using System;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
     public class GameController
     {
@@ -31,17 +31,17 @@ namespace SeatBattle.CSharp
             if(_scoreBoard.GameHasEnded())
                 return;
 
-            var shooter = (Player)sender;
-            var openent = shooter == _player1 ? _player2 : _player1;
+            //var shooter = (Player)sender;
+            //var openent = shooter == _player1 ? _player2 : _player1;
 
-            if (e.Result != ShotResult.Missed)
-            {
-                shooter.Shoot();
-            }
-            else
-            {
-                openent.Shoot();
-            }
+            //if (e.Result != ShotResult.Missed)
+            //{
+            //    shooter.Shoot();
+            //}
+            //else
+            //{
+            //    openent.Shoot();
+            //}
         }
 
         private void OnPlayerShooting(object sender, ShootingEventArgs e)
@@ -59,6 +59,7 @@ namespace SeatBattle.CSharp
                 openent = _player1;
                 oponentBoard = _board1;
             }
+
 
             var shotResult = oponentBoard.OpenentShotAt(e.X, e.Y);
             e.Result = shotResult;
@@ -90,6 +91,10 @@ namespace SeatBattle.CSharp
             player.Shoot();
         }
 
+        public ShotResult shootResult(int X, int Y)
+        {
+            return _board1.OpenentShotAt(X, Y);
+        }
 
     }
 }

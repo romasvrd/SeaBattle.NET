@@ -1,4 +1,4 @@
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
     public enum ShotResult
     {

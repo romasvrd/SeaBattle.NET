@@ -6,18 +6,26 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
-    class Network
+    public class Network
     {
         private ShowMessageDelegate msgDelegate;
+        private ReceiveShotDelegate shotDelegate;
         private UdpClient udpListener;
         private UdpClient udpSender;
         private Thread _thrListen;
+        private GameController controller;
         private bool _terminated;
-        public Network(ShowMessageDelegate MsgDelegate)
+
+        private const string cmdSendShot = "sht";
+        private const string cmdShotResult = "shr";
+        private const string cmdChatMsg = "msg";
+        public Network(ShowMessageDelegate MsgDelegate, ReceiveShotDelegate ShotDelegate, GameController Controller)
         {
+            controller = Controller;
             msgDelegate = MsgDelegate;
+            shotDelegate = ShotDelegate;
             _terminated = false;
         }
         public void Connect(string MyIP, string FriendIP, int MyPort, int FriendPort)
@@ -31,21 +39,49 @@ namespace SeatBattle.CSharp
 
         public void Send(string Message)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(Message);
+            byte[] bytes = Encoding.UTF8.GetBytes(cmdChatMsg + " " + Message);
             udpSender.Send(bytes, bytes.Length);
+        }
+
+        public void SendShot(int X, int Y)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(cmdSendShot + " " + X.ToString() + " " + Y.ToString());
+            udpSender.Send(bytes, bytes.Length); 
+        }
+        public void ReceiveShot(string Coords)
+        {
+            string[] coordsSplitted = Coords.Split(' ');
+
+            shotDelegate.Invoke(Convert.ToInt32(coordsSplitted[0]), Convert.ToInt32(coordsSplitted[1]));
+            //controller.shootResult(Convert.ToInt32(coordsSplitted[0]), Convert.ToInt32(coordsSplitted[1]));
         }
         private void ListenUdp()
         {
             IPEndPoint RemoteIpEndPoint = null;
             while (!_terminated)
             {
-                // Ожидание дейтаграммы
+                // Ожидание датаграммы
                 byte[] receiveBytes = udpListener.Receive(ref RemoteIpEndPoint);
 
-                // Преобразуем и отображаем данные
                 string returnData = Encoding.UTF8.GetString(receiveBytes);
-                msgDelegate.Invoke(returnData);
-                //Console.WriteLine(" --> " + returnData.ToString());
+                string cmd = returnData.Substring(0, 3);
+                string msg = returnData.Substring(4);
+                returnData = returnData.Remove(0, 1);   //убираем идентификатор команды
+                msgDelegate.Invoke("input" + msg);
+                if (cmd == cmdChatMsg)
+                {
+                    // Преобразуем и отображаем данные
+                    returnData = returnData.Remove(0, 1);   //убираем идентификатор команды
+                    msgDelegate.Invoke(msg);
+                }
+                else if (cmd == cmdSendShot)
+                {
+                    ReceiveShot(msg);
+                }
+                else if (cmd == cmdShotResult)
+                {
+
+                }
             }
         }
     }

@@ -2,10 +2,11 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
 
     public delegate void ShowMessageDelegate(string Message);
+    public delegate void ReceiveShotDelegate(int X, int Y);
     public class MainForm : Form
     {
         private readonly Player _humanPlayer;
@@ -49,7 +50,7 @@ namespace SeatBattle.CSharp
         {
             SuspendLayout();
             ShowMessageDelegate del = new ShowMessageDelegate(ShowMessage);
-            network = new Network(del);
+            ReceiveShotDelegate delShot = new ReceiveShotDelegate(Shot);
             _humanBoard = new Board();
             _computerBoard = new Board(false);
 
@@ -59,7 +60,10 @@ namespace SeatBattle.CSharp
 
             _scoreboard = new ScoreBoard(_humanPlayer, _computerPlayer, 10, 100);
             _controller = new GameController(_humanPlayer, _computerPlayer, _humanBoard, _computerBoard, _scoreboard);
-            
+            network = new Network(del, delShot, _controller);
+
+            _humanBoard.network = network;
+            _computerBoard.network = network;
             _shuffleButton = CreateButton(ShuffleCharacter.ToString(), ButtonBackColor);
             _newGameButton = CreateButton(NewGameCharacter.ToString(), ButtonBackColor);
             _connectButton = CreateButton(ConnectCharacter.ToString(), ButtonBackColor);
@@ -109,13 +113,16 @@ namespace SeatBattle.CSharp
         private void OnSendButtonClick(object sender, System.EventArgs e)
         {
             network.Send(outMsg.Text);
-            _richTextBox.AppendText("<<" + outMsg.Text);
+            _richTextBox.AppendText("<< " + outMsg.Text + "\r\n");
         }
         private void OnNewGameButtonClick(object sender, System.EventArgs e)
         {
             StartNewGame();
         }
-
+        private void Shot(int X, int Y)
+        {
+            _controller.shootResult(X, Y);
+        }
 
         private void StartNewGame()
         {
@@ -241,9 +248,7 @@ namespace SeatBattle.CSharp
 
         private void ShowMessage(string Message)
         {
-            _richTextBox.Invoke(new Action(() => { _richTextBox.AppendText(">>" + Message + "\r\n"); }));
-
-
+            _richTextBox.Invoke(new Action(() => { _richTextBox.AppendText(">> " + Message + "\r\n"); }));
         }
     }
 }

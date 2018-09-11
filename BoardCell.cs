@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
     [DebuggerDisplay("({X},{Y}) {_state}")]
     public class BoardCell : Label
@@ -41,13 +41,17 @@ namespace SeatBattle.CSharp
             set
             {
                 _state = value;
-                OnCellStateChenged();
+                if(_state == BoardCellState.Normal || _state == BoardCellState.Ship)
+                    OnCellStateChenged();
+                else
+                    this.Invoke(new System.Action(() => { OnCellStateChenged(); }));
             }
         }
 
         private void OnCellStateChenged()
         {
             SuspendLayout();
+            //_richTextBox.Invoke(new Action(() => { _richTextBox.AppendText(">> " + Message + "\r\n"); }));
             switch (_state)
             {
                 case BoardCellState.Normal:

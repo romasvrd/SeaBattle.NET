@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
     public class ComputerPlayer : Player
     {

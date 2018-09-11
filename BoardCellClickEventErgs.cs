@@ -1,6 +1,6 @@
 using System;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
     public class BoardCellClickEventErgs : EventArgs
     {

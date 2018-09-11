@@ -66,8 +66,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BoardCellClickEventErgs.cs" />
-    <Compile Include="BoardCellState.cs" />
-    <Compile Include="BoardMode.cs" />
     <Compile Include="ComputerPlayer.cs" />
     <Compile Include="DraggableShip.cs" />
     <Compile Include="GameController.cs" />
@@ -87,7 +85,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Ship.cs" />
-    <Compile Include="ShipOrientation.cs" />
     <Compile Include="ShootingEventArgs.cs" />
     <Compile Include="ShotResult.cs" />
   </ItemGroup>

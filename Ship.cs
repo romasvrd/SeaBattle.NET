@@ -2,9 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
     [DebuggerDisplay("({Location.X},{Location.Y}) {Orientation} x{Length}")]
+
+    public enum ShipOrientation
+    {
+        Horizontal,
+        Vertical
+    }
+
     public class Ship
     {
         public Ship(int length)

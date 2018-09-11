@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
     public class HumanPlayer : Player
     {

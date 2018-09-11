@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
     static class Program
     {

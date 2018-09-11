@@ -5,8 +5,25 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
+    public enum BoardMode
+    {
+        Design,
+        Game
+    }
+
+    public enum BoardCellState
+    {
+        Normal,
+        MissedShot,
+        Ship,
+        ShotShip,
+        ShipDrag,
+        ShipDragInvalid,
+        ShowDrowned
+    }
+
     public class Board : Control
     {
         private const int CellSize = 25;
@@ -18,6 +35,7 @@ namespace SeatBattle.CSharp
         private DraggableShip _draggedShip;
         private readonly Random _rnd;
         private readonly bool _drawShips;
+        public Network network { get; set; }
 
         public Board():this(true){}
 
@@ -115,13 +133,15 @@ namespace SeatBattle.CSharp
             if (Mode != BoardMode.Game)
                 return;
 
-            var handler = OnClick;
-            if (handler == null)
-                return;
+            //var handler = OnClick;
+            //if (handler == null)
+            //    return;
 
             var cell = (BoardCell)sender;
             var eventArgs = new BoardCellClickEventErgs(cell.X, cell.Y);
-            handler(this, eventArgs);
+
+            network.SendShot(cell.X, cell.Y);
+            //handler(this, eventArgs);
         }
 
         /// <summary>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
     [DebuggerDisplay("({X},{Y}) {Width}x{Height}")]
     public class Rect

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace SeatBattle.CSharp
+namespace SeaBattle.CSharp
 {
     public abstract class Player
     {
