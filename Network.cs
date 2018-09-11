@@ -28,6 +28,10 @@ namespace SeaBattle.CSharp
             shotDelegate = ShotDelegate;
             _terminated = false;
         }
+        ~Network()
+        {
+            _terminated = true;
+        }
         public void Connect(string MyIP, string FriendIP, int MyPort, int FriendPort)
         {
             udpListener = new UdpClient(MyPort);

@@ -51,7 +51,6 @@ namespace SeaBattle.CSharp
         private void OnCellStateChenged()
         {
             SuspendLayout();
-            //_richTextBox.Invoke(new Action(() => { _richTextBox.AppendText(">> " + Message + "\r\n"); }));
             switch (_state)
             {
                 case BoardCellState.Normal:
