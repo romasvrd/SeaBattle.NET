@@ -60,7 +60,6 @@ namespace SeaBattle.CSharp
                 oponentBoard = _board1;
             }
 
-
             var shotResult = oponentBoard.OpenentShotAt(e.X, e.Y);
             e.Result = shotResult;
 

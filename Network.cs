@@ -12,20 +12,22 @@ namespace SeaBattle.CSharp
     {
         private ShowMessageDelegate msgDelegate;
         private ReceiveShotDelegate shotDelegate;
+        private ReceiveCellShotResultDelegate shotResultDelegate;
         private UdpClient udpListener;
         private UdpClient udpSender;
         private Thread _thrListen;
-        private GameController controller;
         private bool _terminated;
 
         private const string cmdSendShot = "sht";
         private const string cmdShotResult = "shr";
         private const string cmdChatMsg = "msg";
-        public Network(ShowMessageDelegate MsgDelegate, ReceiveShotDelegate ShotDelegate, GameController Controller)
+        public Network (ShowMessageDelegate MsgDelegate, 
+                        ReceiveShotDelegate ShotDelegate, 
+                        ReceiveCellShotResultDelegate ShotResultDelegate)
         {
-            controller = Controller;
             msgDelegate = MsgDelegate;
             shotDelegate = ShotDelegate;
+            shotResultDelegate = ShotResultDelegate;
             _terminated = false;
         }
         ~Network()
@@ -40,25 +42,40 @@ namespace SeaBattle.CSharp
             _thrListen = new Thread(new ThreadStart(ListenUdp));
             _thrListen.Start();
         }
-
-        public void Send(string Message)
+        //отправка сообщения в чат
+        public void SendMessage(string Message)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(cmdChatMsg + " " + Message);
             udpSender.Send(bytes, bytes.Length);
         }
-
+        //выстрел в поле соперника
         public void SendShot(int X, int Y)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(cmdSendShot + " " + X.ToString() + " " + Y.ToString());
             udpSender.Send(bytes, bytes.Length); 
         }
+        //отправка результата выстрела соперника
+        public void SendCellShotResult(int X, int Y, BoardCellState State)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(cmdShotResult + " " + 
+                X.ToString() + " " + Y.ToString() + " " + ((int)State).ToString());
+            udpSender.Send(bytes, bytes.Length);
+        }
+        //прием результата выстрела в поле соперника
+        public void ReceiveCellShotResult(string ResultString)
+        {
+            string[] resultsSplitted = ResultString.Split(' ');
+            shotResultDelegate.Invoke(Convert.ToInt32(resultsSplitted[0]), Convert.ToInt32(resultsSplitted[1]), 
+                (BoardCellState)Convert.ToInt32(resultsSplitted[2]));
+        }
+        //прием выстрела от соперника
         public void ReceiveShot(string Coords)
         {
             string[] coordsSplitted = Coords.Split(' ');
-
             shotDelegate.Invoke(Convert.ToInt32(coordsSplitted[0]), Convert.ToInt32(coordsSplitted[1]));
-            //controller.shootResult(Convert.ToInt32(coordsSplitted[0]), Convert.ToInt32(coordsSplitted[1]));
         }
+
+        //Поток приёма данных по UDP
         private void ListenUdp()
         {
             IPEndPoint RemoteIpEndPoint = null;
@@ -84,7 +101,7 @@ namespace SeaBattle.CSharp
                 }
                 else if (cmd == cmdShotResult)
                 {
-
+                    ReceiveCellShotResult(msg);
                 }
             }
         }

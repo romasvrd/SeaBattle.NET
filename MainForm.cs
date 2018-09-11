@@ -7,6 +7,7 @@ namespace SeaBattle.CSharp
 
     public delegate void ShowMessageDelegate(string Message);
     public delegate void ReceiveShotDelegate(int X, int Y);
+    public delegate void ReceiveCellShotResultDelegate(int X, int Y, BoardCellState State);
     public class MainForm : Form
     {
         private readonly Player _humanPlayer;
@@ -51,6 +52,7 @@ namespace SeaBattle.CSharp
             SuspendLayout();
             ShowMessageDelegate del = new ShowMessageDelegate(ShowMessage);
             ReceiveShotDelegate delShot = new ReceiveShotDelegate(Shot);
+            ReceiveCellShotResultDelegate delShotRes = new ReceiveCellShotResultDelegate(ShotResults);
             _humanBoard = new Board();
             _computerBoard = new Board(false);
 
@@ -60,7 +62,7 @@ namespace SeaBattle.CSharp
 
             _scoreboard = new ScoreBoard(_humanPlayer, _computerPlayer, 10, 100);
             _controller = new GameController(_humanPlayer, _computerPlayer, _humanBoard, _computerBoard, _scoreboard);
-            network = new Network(del, delShot, _controller);
+            network = new Network(del, delShot, delShotRes);
 
             _humanBoard.network = network;
             _computerBoard.network = network;
@@ -112,7 +114,7 @@ namespace SeaBattle.CSharp
 
         private void OnSendButtonClick(object sender, System.EventArgs e)
         {
-            network.Send(outMsg.Text);
+            network.SendMessage(outMsg.Text);
             _richTextBox.AppendText("<< " + outMsg.Text + "\r\n");
         }
         private void OnNewGameButtonClick(object sender, System.EventArgs e)
@@ -122,6 +124,10 @@ namespace SeaBattle.CSharp
         private void Shot(int X, int Y)
         {
             _controller.shootResult(X, Y);
+        }
+        private void ShotResults(int X, int Y, BoardCellState State)
+        {
+
         }
 
         private void StartNewGame()

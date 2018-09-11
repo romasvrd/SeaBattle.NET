@@ -133,15 +133,10 @@ namespace SeaBattle.CSharp
             if (Mode != BoardMode.Game)
                 return;
 
-            //var handler = OnClick;
-            //if (handler == null)
-            //    return;
-
             var cell = (BoardCell)sender;
             var eventArgs = new BoardCellClickEventErgs(cell.X, cell.Y);
 
             network.SendShot(cell.X, cell.Y);
-            //handler(this, eventArgs);
         }
 
         /// <summary>
@@ -458,6 +453,7 @@ namespace SeaBattle.CSharp
         {
             var ship = GetShipAt(x, y);
 
+            network.SendCellShotResult(x, y, _cells[x, y].State);
             if (ship == null)
             {
                 _cells[x, y].State = BoardCellState.MissedShot;
