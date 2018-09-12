@@ -118,6 +118,10 @@ namespace SeaBattle.CSharp
         {
             network.SendMessage(outMsg.Text);
             _richTextBox.AppendText("<< " + outMsg.Text + "\r\n");
+            // позиция каретки в конец строки
+            _richTextBox.SelectionStart = _richTextBox.Text.Length;
+            // автоскролл
+            _richTextBox.ScrollToCaret();
         }
         private void OnNewGameButtonClick(object sender, System.EventArgs e)
         {
@@ -216,7 +220,6 @@ namespace SeaBattle.CSharp
             friendIP.Location = new Point(_computerBoard.Left + 175, _scoreboard.Bottom);
             friendPort.Location = new Point(_computerBoard.Left + 175, _scoreboard.Bottom + 25);
 
-
             pnBot.Top = tbMyPort.Bottom;
             pnBot.Height = 138;
             
@@ -229,9 +232,6 @@ namespace SeaBattle.CSharp
                                       _startGameButton,
                                       _connectButton,
                                       _shuffleButton,
-                                      //_richTextBox,
-                                      //_gbMySocket,
-                                      //_gbFriendSocket,
                                       tbMyIP,
                                       tbMyPort,
                                       friendIP,
@@ -244,7 +244,14 @@ namespace SeaBattle.CSharp
 
         private void ShowMessage(string Message)
         {
-            _richTextBox.Invoke(new Action(() => { _richTextBox.AppendText(">> " + Message + "\r\n"); }));
+            _richTextBox.Invoke(new Action(() => 
+            {
+                _richTextBox.AppendText(">> " + Message + "\r\n");
+                // позиция каретки в конец строки
+                _richTextBox.SelectionStart = _richTextBox.Text.Length;
+                // автоскролл
+                _richTextBox.ScrollToCaret();
+            }));
         }
         
 
