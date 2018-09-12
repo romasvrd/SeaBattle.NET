@@ -10,7 +10,8 @@ namespace SeaBattle.CSharp
     public enum BoardMode
     {
         Design,
-        Game
+        Game,
+        Yeld
     }
 
     public enum BoardCellState
@@ -130,7 +131,7 @@ namespace SeaBattle.CSharp
 
         private void OnCellClick(object sender, EventArgs e)
         {
-            if (Mode != BoardMode.Game)
+            if (Mode == BoardMode.Design || Mode == BoardMode.Yeld)
                 return;
 
             var cell = (BoardCell)sender;

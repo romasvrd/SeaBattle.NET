@@ -39,6 +39,7 @@ namespace SeaBattle.CSharp
             ShotResult res = _board1.OpenentShotAt(X, Y);
             if(res == ShotResult.Missed)
             {
+                _board2.Mode = BoardMode.Game;
                 _scoreBoard.TakeControl();
             }
         }
@@ -59,6 +60,7 @@ namespace SeaBattle.CSharp
             }
             if(State == ShotResult.Missed)
             {
+                _board2.Mode = BoardMode.Yeld;
                 _scoreBoard.YeldControl();
             }
             _board2.Invoke(new System.Action(() => _board2.Refresh()));
