@@ -179,9 +179,17 @@ namespace SeaBattle.CSharp
             _playerNames.Second.ForeColor = InactivePlayerColor;
         }
 
+        public void YeldControl()
+        {
+            _playerNames.First.ForeColor = InactivePlayerColor;
+            _playerNames.Second.ForeColor = ActivePlayerColor;
+        }
 
-
-
+        public void TakeControl()
+        {
+            _playerNames.First.ForeColor = ActivePlayerColor;
+            _playerNames.Second.ForeColor = InactivePlayerColor;
+        }
 
         #region Layout
 

@@ -17,8 +17,6 @@ namespace SeaBattle.CSharp
             _board1 = board1;
             _board2 = board2;
             _scoreBoard = scoreBoard;
-
-    
         }   
 
         public void NewGame()
@@ -38,7 +36,11 @@ namespace SeaBattle.CSharp
 
         public void shootResult(int X, int Y)
         {
-            _board1.OpenentShotAt(X, Y);
+            ShotResult res = _board1.OpenentShotAt(X, Y);
+            if(res == ShotResult.Missed)
+            {
+                _scoreBoard.TakeControl();
+            }
         }
 
         public void friendShootResult(int X, int Y, ShotResult State)
@@ -55,7 +57,10 @@ namespace SeaBattle.CSharp
                     _board2._cells[X, Y].State = BoardCellState.ShowDrowned;
                     break;
             }
-            
+            if(State == ShotResult.Missed)
+            {
+                _scoreBoard.YeldControl();
+            }
             _board2.Invoke(new System.Action(() => _board2.Refresh()));
         }
     }
