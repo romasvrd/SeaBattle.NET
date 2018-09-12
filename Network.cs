@@ -30,10 +30,6 @@ namespace SeaBattle.CSharp
             shotResultDelegate = ShotResultDelegate;
             _terminated = false;
         }
-        ~Network()
-        {
-            _terminated = true;
-        }
         public void Connect(string MyIP, string FriendIP, int MyPort, int FriendPort)
         {
             udpListener = new UdpClient(MyPort);
@@ -75,14 +71,31 @@ namespace SeaBattle.CSharp
             shotDelegate.Invoke(Convert.ToInt32(coordsSplitted[0]), Convert.ToInt32(coordsSplitted[1]));
         }
 
+        public void Disconnect()
+        {
+            udpListener.Close();
+            _terminated = true;
+            _thrListen.Interrupt();
+            _thrListen.Join();
+        }
         //Поток приёма данных по UDP
         private void ListenUdp()
         {
             IPEndPoint RemoteIpEndPoint = null;
+
+            byte[] receiveBytes;
             while (!_terminated)
             {
                 // Ожидание датаграммы
-                byte[] receiveBytes = udpListener.Receive(ref RemoteIpEndPoint);
+                try
+                {
+                    receiveBytes = udpListener.Receive(ref RemoteIpEndPoint);
+                }
+                catch(Exception)
+                {
+                    continue;
+                }
+
 
                 string returnData = Encoding.UTF8.GetString(receiveBytes);
                 string cmd = returnData.Substring(0, 3);

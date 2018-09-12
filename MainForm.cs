@@ -102,6 +102,8 @@ namespace SeaBattle.CSharp
             _connectButton.Click += OnConnectButtonClick;
             _sendButton.Click += OnSendButtonClick;
 
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
+
             ResumeLayout();
 
             StartNewGame();
@@ -240,21 +242,16 @@ namespace SeaBattle.CSharp
             ClientSize = new Size(_computerBoard.Right+25, 570);
         }
 
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // MainForm
-            // 
-            this.ClientSize = new System.Drawing.Size(620, 501);
-            this.Name = "MainForm";
-            this.ResumeLayout(false);
-
-        }
-
         private void ShowMessage(string Message)
         {
             _richTextBox.Invoke(new Action(() => { _richTextBox.AppendText(">> " + Message + "\r\n"); }));
+        }
+        
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+            network.Disconnect();
         }
     }
 }
