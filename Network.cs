@@ -73,10 +73,13 @@ namespace SeaBattle.CSharp
 
         public void Disconnect()
         {
-            udpListener.Close();
-            _terminated = true;
-            _thrListen.Interrupt();
-            _thrListen.Join();
+            if (udpListener != null)
+            {
+                udpListener.Close();
+                _terminated = true;
+                _thrListen.Interrupt();
+                _thrListen.Join();
+            }
         }
         //Поток приёма данных по UDP
         private void ListenUdp()
