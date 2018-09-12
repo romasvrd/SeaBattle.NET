@@ -90,10 +90,26 @@ namespace SeaBattle.CSharp
             player.Shoot();
         }
 
-        public ShotResult shootResult(int X, int Y)
+        public void shootResult(int X, int Y)
         {
-            return _board1.OpenentShotAt(X, Y);
+            _board1.OpenentShotAt(X, Y);
         }
-
+        public void friendShootResult(int X, int Y, ShotResult State)
+        {
+            switch(State)
+            {
+                case ShotResult.Missed:
+                    _board2._cells[X, Y].State = BoardCellState.MissedShot;
+                    break;
+                case ShotResult.ShipHit:
+                    _board2._cells[X, Y].State = BoardCellState.ShotShip;
+                    break;
+                case ShotResult.ShipDrowned:
+                    _board2._cells[X, Y].State = BoardCellState.ShowDrowned;
+                    break;
+            }
+            
+            _board2.Invoke(new System.Action(() => _board2.Refresh()));
+        }
     }
 }

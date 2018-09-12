@@ -7,7 +7,7 @@ namespace SeaBattle.CSharp
 
     public delegate void ShowMessageDelegate(string Message);
     public delegate void ReceiveShotDelegate(int X, int Y);
-    public delegate void ReceiveCellShotResultDelegate(int X, int Y, BoardCellState State);
+    public delegate void ReceiveCellShotResultDelegate(int X, int Y, ShotResult State);
     public class MainForm : Form
     {
         private readonly Player _humanPlayer;
@@ -125,9 +125,9 @@ namespace SeaBattle.CSharp
         {
             _controller.shootResult(X, Y);
         }
-        private void ShotResults(int X, int Y, BoardCellState State)
+        private void ShotResults(int X, int Y, ShotResult State)
         {
-
+            _controller.friendShootResult(X, Y, State);
         }
 
         private void StartNewGame()

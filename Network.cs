@@ -55,7 +55,7 @@ namespace SeaBattle.CSharp
             udpSender.Send(bytes, bytes.Length); 
         }
         //отправка результата выстрела соперника
-        public void SendCellShotResult(int X, int Y, BoardCellState State)
+        public void SendCellShotResult(int X, int Y, ShotResult State)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(cmdShotResult + " " + 
                 X.ToString() + " " + Y.ToString() + " " + ((int)State).ToString());
@@ -66,7 +66,7 @@ namespace SeaBattle.CSharp
         {
             string[] resultsSplitted = ResultString.Split(' ');
             shotResultDelegate.Invoke(Convert.ToInt32(resultsSplitted[0]), Convert.ToInt32(resultsSplitted[1]), 
-                (BoardCellState)Convert.ToInt32(resultsSplitted[2]));
+                (ShotResult)Convert.ToInt32(resultsSplitted[2]));
         }
         //прием выстрела от соперника
         public void ReceiveShot(string Coords)

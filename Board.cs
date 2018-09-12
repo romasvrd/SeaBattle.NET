@@ -30,7 +30,7 @@ namespace SeaBattle.CSharp
 
         private static readonly Rect BoardRegion = new Rect(0, 0, 10, 10);
 
-        private readonly BoardCell[,] _cells;
+        public BoardCell[,] _cells { get; set; }
         private readonly List<Ship> _ships;
         private DraggableShip _draggedShip;
         private readonly Random _rnd;
@@ -452,21 +452,26 @@ namespace SeaBattle.CSharp
         public ShotResult OpenentShotAt(int x, int y)
         {
             var ship = GetShipAt(x, y);
+            ShotResult result;
 
-            network.SendCellShotResult(x, y, _cells[x, y].State);
             if (ship == null)
             {
                 _cells[x, y].State = BoardCellState.MissedShot;
-                return ShotResult.Missed;
+                result = ShotResult.Missed;
             }
-            _cells[x, y].State = BoardCellState.ShotShip;
+            else
+            {
+                _cells[x, y].State = BoardCellState.ShotShip;
 
-            ship.HitCount++;
+                ship.HitCount++;
 
-            if (ship.IsDrowned)
-                DrawShip(ship, BoardCellState.ShowDrowned, true);
+                if (ship.IsDrowned)
+                    DrawShip(ship, BoardCellState.ShowDrowned, true);
 
-            return ship.IsDrowned ? ShotResult.ShipDrowned : ShotResult.ShipHit;
+                result = ship.IsDrowned ? ShotResult.ShipDrowned : ShotResult.ShipHit;
+            }
+            network.SendCellShotResult(x, y, result);
+            return result;
         }
 
         public new event EventHandler<BoardCellClickEventErgs> OnClick;
