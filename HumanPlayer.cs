@@ -10,7 +10,7 @@ namespace SeaBattle.CSharp
             : base(name)
         {
             _board = board;
-            _board.OnClick += OnBoardClick;
+            //_board.OnClick += OnBoardClick;
 
         }
 

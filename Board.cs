@@ -462,27 +462,32 @@ namespace SeaBattle.CSharp
             }
             else
             {
-                _cells[x, y].State = BoardCellState.ShotShip;
+                if (_cells[x, y].State == BoardCellState.ShotShip)
+                    result = ShotResult.ShipHit;
+                else
+                {
+                    _cells[x, y].State = BoardCellState.ShotShip;
 
-                ship.HitCount++;
+                    ship.HitCount++;
 
-                if (ship.IsDrowned)
-                    DrawShip(ship, BoardCellState.ShowDrowned, true);
+                    if (ship.IsDrowned)
+                        DrawShip(ship, BoardCellState.ShowDrowned, true);
 
-                result = ship.IsDrowned ? ShotResult.ShipDrowned : ShotResult.ShipHit;
+                    result = ship.IsDrowned ? ShotResult.ShipDrowned : ShotResult.ShipHit;
+                }
             }
             network.SendCellShotResult(x, y, result);
             return result;
         }
 
-        public new event EventHandler<BoardCellClickEventErgs> OnClick;
+        //public new event EventHandler<BoardCellClickEventErgs> OnClick;
 
-        protected override void OnParentChanged(EventArgs e)
-        {
-            base.OnParentChanged(e);
-            Font = Parent.Font;
-            Debug.WriteLine(Font.Name);
-        }
+        //protected override void OnParentChanged(EventArgs e)
+        //{
+        //    base.OnParentChanged(e);
+        //    Font = Parent.Font;
+        //    Debug.WriteLine(Font.Name);
+        //}
 
     }
 }
