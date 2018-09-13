@@ -99,7 +99,6 @@ namespace SeaBattle.CSharp
                     continue;
                 }
 
-
                 string returnData = Encoding.UTF8.GetString(receiveBytes);
                 string cmd = returnData.Substring(0, 3);
                 string msg = returnData.Substring(4);

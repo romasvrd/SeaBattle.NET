@@ -102,6 +102,18 @@ namespace SeaBattle.CSharp
             _connectButton.Click += OnConnectButtonClick;
             _sendButton.Click += OnSendButtonClick;
 
+            ToolTip toolTip1 = new ToolTip();
+
+            toolTip1.AutoPopDelay = 5000;
+            toolTip1.InitialDelay = 1000;
+            toolTip1.ReshowDelay = 500;
+
+            toolTip1.SetToolTip(_shuffleButton, "Разместить автоматически");
+            toolTip1.SetToolTip(_startGameButton, "Начать игру");
+            toolTip1.SetToolTip(_newGameButton, "Новая игра");
+            toolTip1.SetToolTip(_connectButton, "Установить связь");
+            toolTip1.SetToolTip(_sendButton, "Отправить сообщение");
+
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
 
             ResumeLayout();
