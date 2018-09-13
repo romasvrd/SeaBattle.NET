@@ -42,26 +42,29 @@ namespace SeaBattle.CSharp
                 _board2.Mode = BoardMode.Game;
                 _scoreBoard.TakeControl();
             }
+            else if(res == ShotResult.ShipDrowned)
+            {
+                _scoreBoard.EnemyDrownedMe();
+            }
         }
 
+        //результат выстрела в поле противника
         public void friendShootResult(int X, int Y, ShotResult State)
         {
             switch(State)
             {
                 case ShotResult.Missed:
                     _board2._cells[X, Y].State = BoardCellState.MissedShot;
+                    _board2.Mode = BoardMode.Yeld;
+                    _scoreBoard.YeldControl();
                     break;
                 case ShotResult.ShipHit:
                     _board2._cells[X, Y].State = BoardCellState.ShotShip;
                     break;
                 case ShotResult.ShipDrowned:
                     _board2._cells[X, Y].State = BoardCellState.ShowDrowned;
+                    _scoreBoard.IDrownedEnemy();
                     break;
-            }
-            if(State == ShotResult.Missed)
-            {
-                _board2.Mode = BoardMode.Yeld;
-                _scoreBoard.YeldControl();
             }
             _board2.Invoke(new System.Action(() => _board2.Refresh()));
         }

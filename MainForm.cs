@@ -172,14 +172,11 @@ namespace SeaBattle.CSharp
 
         private void OnGameEnded(object sender, System.EventArgs e)
         {
-            _shuffleButton.Visible = false;
-            _startGameButton.Visible = false;
-            _newGameButton.Visible = true;
+            _shuffleButton.Invoke(new Action(()=>_shuffleButton.Visible = false));
+            _startGameButton.Invoke(new Action(() => _startGameButton.Visible = false));
+            _newGameButton.Invoke(new Action(() => _newGameButton.Visible = true));
             _computerBoard.ShowShips();
         }
-
-
-
 
         private void SetupWindow()
         {
@@ -269,7 +266,6 @@ namespace SeaBattle.CSharp
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-
             network.Disconnect();
         }
     }

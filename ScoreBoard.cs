@@ -13,7 +13,7 @@ namespace SeaBattle.CSharp
         private readonly int _shotsPerGame;
         private readonly Label _scoreLabel;
 
-        private const string PlayerStatsTemplate = "Ships left: {0}, Shots left: {1}";
+        private const string PlayerStatsTemplate = "Ships left: {0}";
         private const string ScoreTemplate = "{0} : {1}";
 
         private static readonly Color ActivePlayerColor = Color.FromArgb(255,174,0);
@@ -29,7 +29,6 @@ namespace SeaBattle.CSharp
 
         private Point _score;
         private Point _shipsLeft;
-        private Point _shotsLeft;
 
 
 
@@ -40,9 +39,7 @@ namespace SeaBattle.CSharp
             _player2 = player2;
             _shipsPerGame = shipsPerGame;
             _shotsPerGame = shotsPerGame;
-
-            _player1.MyTurn += OnPlayerTurnChanged;
-            _player2.MyTurn += OnPlayerTurnChanged;
+            
 
             _player1.Shot += OnPlayerMadeShot;
             _player2.Shot += OnPlayerMadeShot;
@@ -70,7 +67,6 @@ namespace SeaBattle.CSharp
         private void InitPlayerStats()
         {
             _shipsLeft = new Point(_shipsPerGame, _shipsPerGame);
-            _shotsLeft = new Point(_shotsPerGame, _shotsPerGame);
             RefreshPlayerStats();
         }
 
@@ -92,13 +88,11 @@ namespace SeaBattle.CSharp
         {
             if (sender == _player1)
             {
-                _shotsLeft.X--;
                 if (e.Result == ShotResult.ShipDrowned)
                     _shipsLeft.Y--;
             }
             else
             {
-                _shotsLeft.Y--;
                 if (e.Result == ShotResult.ShipDrowned)
                     _shipsLeft.X--;
             }
@@ -108,18 +102,17 @@ namespace SeaBattle.CSharp
 
         private void RefreshPlayerStats()
         {
-            _playerStats.First.Text = string.Format(PlayerStatsTemplate, _shipsLeft.X, _shotsLeft.X);
-            _playerStats.Second.Text = string.Format(PlayerStatsTemplate, _shipsLeft.Y, _shotsLeft.Y);
-        }
+            if(_shipsLeft.X == 10 && _shipsLeft.Y == 10)
+            {
+                _playerStats.First.Text = string.Format(PlayerStatsTemplate, _shipsLeft.X);
+                _playerStats.Second.Text = string.Format(PlayerStatsTemplate, _shipsLeft.Y);
+            }
+            else
+            {
+                _playerStats.First.Invoke(new Action(() => _playerStats.First.Text = string.Format(PlayerStatsTemplate, _shipsLeft.X)));
+                _playerStats.Second.Invoke(new Action(() => _playerStats.Second.Text = string.Format(PlayerStatsTemplate, _shipsLeft.Y)));
 
-
-        private void OnPlayerTurnChanged(object sender, EventArgs e)
-        {
-            var color1 = sender == _player1 ? ActivePlayerColor : InactivePlayerColor;
-            var color2 = sender == _player2 ? ActivePlayerColor : InactivePlayerColor;
-
-            _playerNames.First.ForeColor = color1;
-            _playerNames.Second.ForeColor = color2;
+            }
         }
 
         public bool GameHasEnded()
@@ -160,7 +153,14 @@ namespace SeaBattle.CSharp
 
         private void RefreshScore()
         {
-            _scoreLabel.Text = string.Format(ScoreTemplate, _score.X, _score.Y);
+            if (_score.X == 0 && _score.Y == 0)
+            {
+                _scoreLabel.Text = string.Format(ScoreTemplate, _score.X, _score.Y);
+            }
+            else
+            {
+                _scoreLabel.Invoke(new Action(() => _scoreLabel.Text = string.Format(ScoreTemplate, _score.X, _score.Y)));
+            }
         }
 
         private void OnGameEnded()
@@ -191,6 +191,19 @@ namespace SeaBattle.CSharp
             _playerNames.Second.ForeColor = InactivePlayerColor;
         }
 
+        public void IDrownedEnemy()
+        {
+            _shipsLeft.Y--;
+            TrackResult();
+            RefreshPlayerStats();
+        }
+
+        public void EnemyDrownedMe()
+        {
+            _shipsLeft.X--;
+            TrackResult();
+            RefreshPlayerStats();
+        }
         #region Layout
 
         private void AddLayoutColumns()

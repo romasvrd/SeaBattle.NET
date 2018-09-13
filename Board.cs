@@ -341,6 +341,7 @@ namespace SeaBattle.CSharp
                     cell.State = BoardCellState.Ship;                        
                 }
             }
+            this.Invoke(new Action(() => this.Invalidate()));
         }
 
         /// <summary>
