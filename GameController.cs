@@ -53,6 +53,7 @@ namespace SeaBattle.CSharp
                     _board2._cells[X, Y].State = BoardCellState.MissedShot;
                     _board2.Mode = BoardMode.Yeld;
                     _scoreBoard.YeldControl();
+                    
                     break;
                 case ShotResult.ShipHit:
                     _board2._cells[X, Y].State = BoardCellState.ShotShip;

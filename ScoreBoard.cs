@@ -82,7 +82,7 @@ namespace SeaBattle.CSharp
             {
                 _playerStats.First.Invoke(new Action(() => _playerStats.First.Text = string.Format(PlayerStatsTemplate, _shipsLeft.X)));
                 _playerStats.Second.Invoke(new Action(() => _playerStats.Second.Text = string.Format(PlayerStatsTemplate, _shipsLeft.Y)));
-
+                RefreshScore();
             }
         }
 
@@ -123,8 +123,8 @@ namespace SeaBattle.CSharp
         private void RefreshScore()
         {
             Point _score = new System.Drawing.Point();
-            _score.X = 10 - _shipsLeft.X;
-            _score.Y = 10 - _shipsLeft.Y;
+            _score.X = 10 - _shipsLeft.Y;
+            _score.Y = 10 - _shipsLeft.X;
             if (_score.X == 0 && _score.Y == 0)
             {
                 _scoreLabel.Text = string.Format(ScoreTemplate, _score.X, _score.Y);

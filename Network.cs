@@ -103,7 +103,6 @@ namespace SeaBattle.CSharp
                 string cmd = returnData.Substring(0, 3);
                 string msg = returnData.Substring(4);
                 returnData = returnData.Remove(0, 1);   //убираем идентификатор команды
-                msgDelegate.Invoke("input" + msg);
                 if (cmd == cmdChatMsg)
                 {
                     // Преобразуем и отображаем данные
