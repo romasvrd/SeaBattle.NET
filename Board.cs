@@ -135,8 +135,6 @@ namespace SeaBattle.CSharp
                 return;
 
             var cell = (BoardCell)sender;
-            var eventArgs = new BoardCellClickEventErgs(cell.X, cell.Y);
-
             network.SendShot(cell.X, cell.Y);
         }
 
@@ -480,15 +478,5 @@ namespace SeaBattle.CSharp
             network.SendCellShotResult(x, y, result);
             return result;
         }
-
-        //public new event EventHandler<BoardCellClickEventErgs> OnClick;
-
-        //protected override void OnParentChanged(EventArgs e)
-        //{
-        //    base.OnParentChanged(e);
-        //    Font = Parent.Font;
-        //    Debug.WriteLine(Font.Name);
-        //}
-
     }
 }

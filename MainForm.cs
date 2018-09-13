@@ -10,9 +10,6 @@ namespace SeaBattle.CSharp
     public delegate void ReceiveCellShotResultDelegate(int X, int Y, ShotResult State);
     public class MainForm : Form
     {
-        private readonly Player _humanPlayer;
-        private readonly Player _computerPlayer;
-
         private readonly Board _humanBoard;
         private readonly Board _computerBoard;
         
@@ -56,12 +53,9 @@ namespace SeaBattle.CSharp
             _humanBoard = new Board();
             _computerBoard = new Board(false);
 
-            _humanPlayer = new HumanPlayer("Me", _computerBoard);
-            _computerPlayer = new ComputerPlayer("Friend");
 
-
-            _scoreboard = new ScoreBoard(_humanPlayer, _computerPlayer, 10, 100);
-            _controller = new GameController(_humanPlayer, _computerPlayer, _humanBoard, _computerBoard, _scoreboard);
+            _scoreboard = new ScoreBoard();
+            _controller = new GameController(_humanBoard, _computerBoard, _scoreboard);
             network = new Network(del, delShot, delShotRes);
 
             _humanBoard.network = network;

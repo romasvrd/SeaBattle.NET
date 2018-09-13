@@ -7,10 +7,6 @@ namespace SeaBattle.CSharp
 {
     public class ScoreBoard : TableLayoutPanel
     {
-        private readonly Player _player1;
-        private readonly Player _player2;
-        private readonly int _shipsPerGame;
-        private readonly int _shotsPerGame;
         private readonly Label _scoreLabel;
 
         private const string PlayerStatsTemplate = "Ships left: {0}";
@@ -27,26 +23,17 @@ namespace SeaBattle.CSharp
         private readonly Pair<Label, Label> _playerNames;
         private readonly Pair<Label, Label> _playerStats;
 
-        private Point _score;
         private Point _shipsLeft;
 
 
 
-        public ScoreBoard(Player player1, Player player2, int shipsPerGame, int shotsPerGame)
+        public ScoreBoard()
         {
             SuspendLayout();
-            _player1 = player1;
-            _player2 = player2;
-            _shipsPerGame = shipsPerGame;
-            _shotsPerGame = shotsPerGame;
-            
-
-            _player1.Shot += OnPlayerMadeShot;
-            _player2.Shot += OnPlayerMadeShot;
-
-
-            var firstPlayerNameLabel = CreateLabel(_player1.Name, InactivePlayerColor);
-            var secondPlayerNameLabel = CreateLabel(_player2.Name, InactivePlayerColor);
+            _shipsLeft.X = 10;
+            _shipsLeft.Y = 10;
+            var firstPlayerNameLabel = CreateLabel("Me", InactivePlayerColor);
+            var secondPlayerNameLabel = CreateLabel("Friend", InactivePlayerColor);
             _playerNames = new Pair<Label, Label>(firstPlayerNameLabel, secondPlayerNameLabel);
 
 
@@ -66,7 +53,7 @@ namespace SeaBattle.CSharp
 
         private void InitPlayerStats()
         {
-            _shipsLeft = new Point(_shipsPerGame, _shipsPerGame);
+            _shipsLeft = new Point(10, 10);
             RefreshPlayerStats();
         }
 
@@ -82,22 +69,6 @@ namespace SeaBattle.CSharp
                            ForeColor = color,
                            TextAlign = ContentAlignment.TopLeft
                        };
-        }
-
-        private void OnPlayerMadeShot(object sender, ShootingEventArgs e)
-        {
-            if (sender == _player1)
-            {
-                if (e.Result == ShotResult.ShipDrowned)
-                    _shipsLeft.Y--;
-            }
-            else
-            {
-                if (e.Result == ShotResult.ShipDrowned)
-                    _shipsLeft.X--;
-            }
-            TrackResult();
-            RefreshPlayerStats();
         }
 
         private void RefreshPlayerStats()
@@ -130,13 +101,11 @@ namespace SeaBattle.CSharp
 
             if (_shipsLeft.X == 0)
             {
-                _score.Y++;
                 color1 = LooserColor;
                 color2 = WinnerColor;
             }
             else
             {
-                _score.X++;
                 color1 = WinnerColor;
                 color2 = LooserColor;
             }
@@ -153,6 +122,9 @@ namespace SeaBattle.CSharp
 
         private void RefreshScore()
         {
+            Point _score = new System.Drawing.Point();
+            _score.X = 10 - _shipsLeft.X;
+            _score.Y = 10 - _shipsLeft.Y;
             if (_score.X == 0 && _score.Y == 0)
             {
                 _scoreLabel.Text = string.Format(ScoreTemplate, _score.X, _score.Y);
