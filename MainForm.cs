@@ -10,12 +10,12 @@ namespace SeaBattle.CSharp
     public delegate void ReceiveCellShotResultDelegate(int X, int Y, ShotResult State);
     public class MainForm : Form
     {
-        private readonly Board _humanBoard;
-        private readonly Board _computerBoard;
+        private readonly Board _boardLeft;
+        private readonly Board _boardRight;
         
         private readonly GameController _controller;
-        
         private readonly ScoreBoard _scoreboard;
+        private Network network;
 
         private readonly Button _shuffleButton;
         private readonly Button _startGameButton;
@@ -42,24 +42,26 @@ namespace SeaBattle.CSharp
         private const char ConnectCharacter = (char)0xC2;
         private const char SendCharacter = (char)0x29;
 
-        private Network network;
 
         public MainForm()
         {
             SuspendLayout();
-            ShowMessageDelegate del = new ShowMessageDelegate(ShowMessage);
+            //Делегат на функцию отображения сообщения в чате
+            ShowMessageDelegate del = new ShowMessageDelegate(ShowMessage); 
+            //делегат на функцию выстрела соперника в поле игрока
             ReceiveShotDelegate delShot = new ReceiveShotDelegate(Shot);
+            //делегат на функцию выстрела игрока в поле соперника
             ReceiveCellShotResultDelegate delShotRes = new ReceiveCellShotResultDelegate(ShotResults);
-            _humanBoard = new Board();
-            _computerBoard = new Board(false);
 
+            _boardLeft = new Board();       //левое игровое поле
+            _boardRight = new Board(false); //правое игровое поле. В конструкторе указываем, что не будем на нем рисовать корабли
 
-            _scoreboard = new ScoreBoard();
-            _controller = new GameController(_humanBoard, _computerBoard, _scoreboard);
-            network = new Network(del, delShot, delShotRes);
+            _scoreboard = new ScoreBoard(); //счёт
+            _controller = new GameController(_boardLeft, _boardRight, _scoreboard); //контроллер игры
+            network = new Network(del, delShot, delShotRes);    //контроллер сетевого соединения
 
-            _humanBoard.network = network;
-            _computerBoard.network = network;
+            _boardLeft.network = network;
+            _boardRight.network = network;
             _shuffleButton = CreateButton(ShuffleCharacter.ToString(), ButtonBackColor);
             _newGameButton = CreateButton(NewGameCharacter.ToString(), ButtonBackColor);
             _connectButton = CreateButton(ConnectCharacter.ToString(), ButtonBackColor);
@@ -161,7 +163,7 @@ namespace SeaBattle.CSharp
 
         private void OnShuffleButtonClick(object sender, System.EventArgs e)
         {
-            _humanBoard.AddRandomShips();
+            _boardLeft.AddRandomShips();
         }
 
         private void OnGameEnded(object sender, System.EventArgs e)
@@ -169,7 +171,7 @@ namespace SeaBattle.CSharp
             _shuffleButton.Invoke(new Action(()=>_shuffleButton.Visible = false));
             _startGameButton.Invoke(new Action(() => _startGameButton.Visible = false));
             _newGameButton.Invoke(new Action(() => _newGameButton.Visible = true));
-            _computerBoard.ShowShips();
+            _boardRight.ShowShips();
         }
 
         private void SetupWindow()
@@ -205,31 +207,31 @@ namespace SeaBattle.CSharp
 
         private void LayoutControls()
         {
-            _humanBoard.Location = new Point(0, 0);
-            _computerBoard.Location = new Point(_humanBoard.Right + 150, 0);
-            _scoreboard.Location = new Point(25, _humanBoard.Bottom );
-            _scoreboard.Width = _computerBoard.Right - 25;
+            _boardLeft.Location = new Point(0, 0);
+            _boardRight.Location = new Point(_boardLeft.Right + 150, 0);
+            _scoreboard.Location = new Point(25, _boardLeft.Bottom );
+            _scoreboard.Width = _boardRight.Right - 25;
 
-            _connectButton.Location = new Point(_humanBoard.Right+25, _scoreboard.Bottom);
+            _connectButton.Location = new Point(_boardLeft.Right+25, _scoreboard.Bottom);
             _newGameButton.Location = new Point(_connectButton.Right, _scoreboard.Bottom);
             _startGameButton.Location = _newGameButton.Location;
             _shuffleButton.Location = new Point(_newGameButton.Right, _newGameButton.Location.Y);
-            _gbMySocket.Location = new Point(_humanBoard.Left, _scoreboard.Bottom);
-            _gbFriendSocket.Location = new Point(_computerBoard.Left, _scoreboard.Bottom);
+            _gbMySocket.Location = new Point(_boardLeft.Left, _scoreboard.Bottom);
+            _gbFriendSocket.Location = new Point(_boardRight.Left, _scoreboard.Bottom);
 
-            tbMyIP.Location = new Point (_humanBoard.Left + 25, _scoreboard.Bottom);
-            tbMyPort.Location = new Point(_humanBoard.Left + 25, _scoreboard.Bottom + 25);
+            tbMyIP.Location = new Point (_boardLeft.Left + 25, _scoreboard.Bottom);
+            tbMyPort.Location = new Point(_boardLeft.Left + 25, _scoreboard.Bottom + 25);
 
-            friendIP.Location = new Point(_computerBoard.Left + 175, _scoreboard.Bottom);
-            friendPort.Location = new Point(_computerBoard.Left + 175, _scoreboard.Bottom + 25);
+            friendIP.Location = new Point(_boardRight.Left + 175, _scoreboard.Bottom);
+            friendPort.Location = new Point(_boardRight.Left + 175, _scoreboard.Bottom + 25);
 
             pnBot.Top = tbMyPort.Bottom;
             pnBot.Height = 138;
             
             Controls.AddRange(new Control[]
                                   {
-                                      _humanBoard,
-                                      _computerBoard,
+                                      _boardLeft,
+                                      _boardRight,
                                       _scoreboard,
                                       _newGameButton,
                                       _startGameButton,
@@ -242,7 +244,7 @@ namespace SeaBattle.CSharp
                                       pnBot
                                   });
 
-            ClientSize = new Size(_computerBoard.Right+25, 570);
+            ClientSize = new Size(_boardRight.Right+25, 570);
         }
 
         private void ShowMessage(string Message)

@@ -15,14 +15,17 @@ namespace SeaBattle.CSharp
             _scoreBoard = scoreBoard;
         }   
 
+        //новая игра - переключение полей в режим дизайна и добавление случайных кораблей
         public void NewGame()
         {
             _board1.Mode = BoardMode.Design;
             _board2.Mode = BoardMode.Design;
             _board1.AddRandomShips();
+            _board2.ClearBoard();
             _scoreBoard.NewGame();
         }
 
+        //запуск игры - переключение полей в режим игры
         public void StartGame()
         {
             _board1.Mode = BoardMode.Game;
@@ -30,17 +33,18 @@ namespace SeaBattle.CSharp
             _scoreBoard.NewGame();
         }
 
+        //выстрел от противника
         public void shootResult(int X, int Y)
         {
             ShotResult res = _board1.OpenentShotAt(X, Y);
-            if(res == ShotResult.Missed)
+            if(res == ShotResult.Missed)            //если противник промахнулся
             {
-                _board2.Mode = BoardMode.Game;
-                _scoreBoard.TakeControl();
+                _board2.Mode = BoardMode.Game;      //разрешаем себе стрелять в поле противника
+                _scoreBoard.TakeControl();          //принимаем ход
             }
-            else if(res == ShotResult.ShipDrowned)
+            else if(res == ShotResult.ShipDrowned)  //иначе, если противник потопил корабль
             {
-                _scoreBoard.EnemyDrownedMe();
+                _scoreBoard.EnemyDrownedMe();       //выполняем обработчик потопления своего корабля
             }
         }
 
@@ -49,21 +53,20 @@ namespace SeaBattle.CSharp
         {
             switch(State)
             {
-                case ShotResult.Missed:
-                    _board2._cells[X, Y].State = BoardCellState.MissedShot;
-                    _board2.Mode = BoardMode.Yeld;
-                    _scoreBoard.YeldControl();
-                    
+                case ShotResult.Missed:             //если я промахнулся
+                    _board2._cells[X, Y].State = BoardCellState.MissedShot;     //помечаю ячейку промахом
+                    _board2.Mode = BoardMode.Yeld;  //запрещаем себе стрелять в поле противника
+                    _scoreBoard.YeldControl();      //передаем ход противнику
                     break;
-                case ShotResult.ShipHit:
-                    _board2._cells[X, Y].State = BoardCellState.ShotShip;
+                case ShotResult.ShipHit:            //если я попал в противника
+                    _board2._cells[X, Y].State = BoardCellState.ShotShip;       //помечаю ячейку подстреленой
                     break;
-                case ShotResult.ShipDrowned:
-                    _board2._cells[X, Y].State = BoardCellState.ShowDrowned;
-                    _scoreBoard.IDrownedEnemy();
+                case ShotResult.ShipDrowned:        //если я потопил корабль
+                    _board2._cells[X, Y].State = BoardCellState.ShowDrowned;    //помечаю ячейку потопленной
+                    _scoreBoard.IDrownedEnemy();    //вызываю обработчик потопления корабля противника
                     break;
             }
-            _board2.Invoke(new System.Action(() => _board2.Refresh()));
+            _board2.Invoke(new System.Action(() => _board2.Refresh())); //перерисовываем поле противника
         }
     }
 }

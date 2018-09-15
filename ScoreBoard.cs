@@ -24,6 +24,7 @@ namespace SeaBattle.CSharp
         private readonly Pair<Label, Label> _playerStats;
 
         private Point _shipsLeft;
+        private Point _score;
 
 
 
@@ -32,6 +33,7 @@ namespace SeaBattle.CSharp
             SuspendLayout();
             _shipsLeft.X = 10;
             _shipsLeft.Y = 10;
+            _score = new Point(0, 0);
             var firstPlayerNameLabel = CreateLabel("Me", InactivePlayerColor);
             var secondPlayerNameLabel = CreateLabel("Friend", InactivePlayerColor);
             _playerNames = new Pair<Label, Label>(firstPlayerNameLabel, secondPlayerNameLabel);
@@ -101,11 +103,13 @@ namespace SeaBattle.CSharp
 
             if (_shipsLeft.X == 0)
             {
+                _score.X++;
                 color1 = LooserColor;
                 color2 = WinnerColor;
             }
             else
             {
+                _score.Y++;
                 color1 = WinnerColor;
                 color2 = LooserColor;
             }
@@ -122,9 +126,6 @@ namespace SeaBattle.CSharp
 
         private void RefreshScore()
         {
-            Point _score = new System.Drawing.Point();
-            _score.X = 10 - _shipsLeft.Y;
-            _score.Y = 10 - _shipsLeft.X;
             if (_score.X == 0 && _score.Y == 0)
             {
                 _scoreLabel.Text = string.Format(ScoreTemplate, _score.X, _score.Y);

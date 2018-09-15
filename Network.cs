@@ -71,6 +71,7 @@ namespace SeaBattle.CSharp
             shotDelegate.Invoke(Convert.ToInt32(coordsSplitted[0]), Convert.ToInt32(coordsSplitted[1]));
         }
 
+        //разрыв соединения
         public void Disconnect()
         {
             if (udpListener != null)
